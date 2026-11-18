@@ -2,6 +2,14 @@
 
 A standalone internship demo with a Home page and a swipe-based Discover feed. It uses React and Vite for the frontend, Node.js and Express for the API, and a local JSON file for one shared demo user.
 
+## Live demo
+
+- [Frontend on Netlify](https://coy-discover.netlify.app/)
+- [Backend API on Render](https://coy-discover-api.onrender.com)
+- Read-only API endpoints: [`/feed`](https://coy-discover-api.onrender.com/feed) and [`/matches`](https://coy-discover-api.onrender.com/matches)
+
+Open the frontend link to try Discover. The live demo requires no account or local setup.
+
 ## Features
 
 - 30 fictional profiles with locally hosted portraits and a fallback image.
@@ -55,8 +63,8 @@ Open the URL printed by Vite. Like the first profile with a fresh data directory
 | --- | --- | --- |
 | Render | `PORT` | Render sets this automatically. Locally defaults to `3000` |
 | Render | `DATA_DIR` | Use the disk mount path, such as `/var/data`. Defaults to `backend/data` locally |
-| Render | `FRONTEND_ORIGIN` | Exact production Netlify origin, such as `https://your-site.netlify.app`, with no trailing slash |
-| Netlify | `VITE_API_BASE_URL` | HTTPS Render base URL, such as `https://your-api.onrender.com`. Set before building the frontend |
+| Render | `FRONTEND_ORIGIN` | Exact production Netlify origin, such as `https://coy-discover.netlify.app`, with no trailing slash |
+| Netlify | `VITE_API_BASE_URL` | HTTPS Render base URL, such as `https://coy-discover-api.onrender.com`. Set before building the frontend |
 
 The production frontend uses `VITE_API_BASE_URL`. Local development uses Vite’s proxy when that variable is unset. CORS allows the configured Netlify origin to read responses. The API is public and shares the same demo user's state across visitors.
 
