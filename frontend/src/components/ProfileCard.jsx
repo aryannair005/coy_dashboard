@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState } from 'react'
+import ProfilePhoto from './ProfilePhoto.jsx'
 
 function ProfileCard({ profile, direction, onSwipe }) {
     const [distance, setDistance] = useState(0)
@@ -42,7 +43,7 @@ function ProfileCard({ profile, direction, onSwipe }) {
             onPointerDown={startDrag} onPointerMove={moveDrag}
             onPointerUp={finishDrag} onPointerCancel={stopDrag}>
             <div className="portrait">
-                <img src={profile.photo} alt={`Illustrated portrait of ${profile.name}`} draggable="false" />
+                <ProfilePhoto src={profile.photo} alt={`Illustrated portrait of ${profile.name}`} />
                 {label && <span className={`stamp ${label}`}>{label.toUpperCase()}</span>}
             </div>
             <div className="profile-body">

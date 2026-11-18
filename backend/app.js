@@ -1,9 +1,24 @@
 const express = require("express");
 const discoverRouter = require("./routes/discover.routes.js");
 
-function createApp(swipes) {
+function createApp(swipes, frontendOrigin) {
     const app = express();
     app.locals.swipes = swipes;
+
+    if (frontendOrigin) {
+        app.use((req, res, next) => {
+            res.vary("Origin");
+            if (req.get("Origin") === frontendOrigin) {
+                res.set("Access-Control-Allow-Origin", frontendOrigin);
+                if (req.method === "OPTIONS") {
+                    res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+                    res.set("Access-Control-Allow-Headers", "Content-Type");
+                    return res.sendStatus(204);
+                }
+            }
+            next();
+        });
+    }
 
     app.use(express.json());
     app.use((req, res, next) => {

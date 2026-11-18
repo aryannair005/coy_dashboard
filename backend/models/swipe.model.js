@@ -25,7 +25,7 @@ function createSwipeModel(file) {
     function getMatches() {
         const swipes = readSwipes(file);
         return profiles.filter((profile) =>
-            swipes.some((swipe) => swipe.profileId === profile.id && swipe.matched)
+            swipes.some((swipe) => swipe.profileId === profile.id && swipe.direction === "like" && swipe.matched === true)
         );
     }
 

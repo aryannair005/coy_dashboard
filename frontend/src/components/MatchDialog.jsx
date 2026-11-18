@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import ProfilePhoto from './ProfilePhoto.jsx'
 
 function MatchDialog({ profile, onClose, onMatches }) {
     const dialog = useRef(null);
@@ -12,7 +13,7 @@ function MatchDialog({ profile, onClose, onMatches }) {
             onCancel={(event) => { event.preventDefault(); onClose(); }}>
             <span className="match-symbol" aria-hidden="true">♥</span>
             <h2 id="match-title">It’s a match!</h2>
-            <img src={profile.photo} alt="" />
+            <ProfilePhoto src={profile.photo} alt="" />
             <p>You and <strong>{profile.name}</strong> liked each other.</p>
             <button className="pill primary" onClick={onMatches}>See matches</button>
             <button className="pill" onClick={onClose}>Keep discovering</button>

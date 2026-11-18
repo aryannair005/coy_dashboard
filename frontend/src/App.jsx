@@ -1,6 +1,20 @@
 import React, { useEffect, useState } from "react"
 import ProfileCard from "./components/ProfileCard.jsx"
 import MatchDialog from "./components/MatchDialog.jsx"
+import ProfilePhoto from "./components/ProfilePhoto.jsx"
+
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || "").trim().replace(/\/+$/, "")
+
+async function request(path, options) {
+    const response = await fetch(apiBaseUrl + path, options)
+    if (!response.headers.get("Content-Type")?.includes("application/json")) {
+        throw new Error("The Discover API returned an unexpected response.")
+    }
+
+    const data = await response.json()
+    if (!response.ok) throw new Error(data.message || "The request failed.")
+    return data
+}
 
 function App() {
     const [tab, setTab] = useState("discover")
@@ -20,14 +34,11 @@ function App() {
         setError("")
 
         try {
-            const response = await fetch(page === "feed" ? "/feed" : "/matches")
-            const data = await response.json()
-
-            if (!response.ok) throw new Error(data.message)
+            const data = await request(page === "feed" ? "/feed" : "/matches")
             if (page === "feed") setProfiles(data.profiles)
             else setMatches(data.matches)
         } catch {
-            setError("Could not load this page. Make sure the backend is running.")
+            setError("Could not load Discover. Please try again.")
         } finally {
             setLoading(false)
         }
@@ -37,6 +48,11 @@ function App() {
         loadPage("feed")
     }, [])
 
+    function openDiscover() {
+        setTab("discover")
+        loadPage("feed")
+    }
+
     async function swipe(choice) {
         if (!profile || direction) return
 
@@ -44,14 +60,11 @@ function App() {
         setFeedback("")
 
         try {
-            const response = await fetch("/swipe", {
+            const data = await request("/swipe", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ profileId: profile.id, direction: choice }),
             })
-            const data = await response.json()
-
-            if (!response.ok) throw new Error(data.message)
 
             // Leave time for the outgoing card animation before showing the next card.
             await new Promise((resolve) => setTimeout(resolve, 240))
@@ -67,9 +80,18 @@ function App() {
 
     return (
         <div className="shell">
+            <header className="brand" aria-label="Coy Discover demo">coy<span>.</span></header>
+            {tab === "home" && (
+                <main className="empty home">
+                    <h1>Welcome to Coy</h1>
+                    <p>Meet new people in Discover. A like is revealed only when it’s mutual.</p>
+                    <button className="pill primary" disabled={loading} onClick={openDiscover}>
+                        Explore Discover
+                    </button>
+                </main>
+            )}
             {tab === "discover" && (
                 <main>
-                    <header className="brand" aria-label="Coy Discover demo">coy<span>.</span></header>
                     <div className="page-heading">
                         <h1>Discover</h1>
                         <button className="pill" disabled={loading || Boolean(direction)}
@@ -99,7 +121,7 @@ function App() {
                     {!loading && !error && view === "matches" && (
                         matches.length > 0 ? <ul className="matches" aria-label="Mutual matches">
                             {matches.map((item) => <li key={item.id}>
-                                <img src={item.photo} alt="" />
+                                <ProfilePhoto src={item.photo} alt="" />
                                 <div><strong>{item.name}, {item.age}</strong><span>{item.city}</span></div>
                                 <span className="mutual">♥ Matched</span>
                             </li>)}

@@ -2,11 +2,16 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 function readSwipes(file) {
-    if (!fs.existsSync(file)) {
-        return [];
+    try {
+        const swipes = JSON.parse(fs.readFileSync(file, "utf8"));
+        if (!Array.isArray(swipes)) {
+            throw new Error("Invalid swipe file format.");
+        }
+        return swipes;
+    } catch (error) {
+        if (error.code === "ENOENT") return [];
+        throw error;
     }
-
-    return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
 function saveSwipes(file, swipes) {
